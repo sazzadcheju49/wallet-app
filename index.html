@@ -72,6 +72,10 @@
       width: min(100%, 520px);
       min-height: 100vh;
       margin: 0 auto;
+      /* ADD THESE 2 LINES BELOW */
+      padding-top: env(safe-area-inset-top); 
+      background-attachment: fixed;
+      /* ----------------------- */
       padding-bottom: calc(var(--nav-h) + env(safe-area-inset-bottom) + 14px);
       background:
         radial-gradient(circle at 20% 0%, rgba(79, 110, 247, .14), transparent 28%),
