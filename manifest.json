@@ -13,5 +13,7 @@
       "type": "image/png",
       "purpose": "any maskable"
     }
-  ]
+  ],
+  "description": "A simple personal finance tracker.",
+  "id": "com.sazzad.wallet"
 }
