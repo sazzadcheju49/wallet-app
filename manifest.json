@@ -2,22 +2,16 @@
   "name": "Wallet",
   "short_name": "Wallet",
   "description": "Personal Finance Tracker",
-  "start_url": "/wallet-app/",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#13141a",
-  "theme_color": "#4f6ef7",
+  "theme_color": "#13141a",
   "icons": [
     {
       "src": "launchericon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any"
-    },
-    {
-      "src": "launchericon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ]
 }
