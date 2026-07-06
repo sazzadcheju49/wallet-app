@@ -24,23 +24,43 @@
     ============================================================ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #13141a;
-      --surface: #21232e;
-      --surface2: #292c38;
-      --border: #2e3247;
-      --text-primary: #f0f2ff;
-      --text-secondary: #8b92b0;
-      --accent: #4f6ef7;
-      --income: #22c55e;
-      --expense: #f43f5e;
-      --needs: #06b6d4;
-      --wants: #f59e0b;
-      --invest: #8b5cf6;
-      --glass-blur: 8px;
-      --glass-opacity: 0.92;
-      --nav-height: 68px;
-      --surface-alpha: rgba(33, 35, 46, 0.92);
-    }
+  --bg: #13141a;
+  --surface: #21232e;
+  --surface2: #292c38;
+  --border: #2e3247;
+  --text-primary: #f0f2ff;
+  --text-secondary: #8b92b0;
+  --accent: #4f6ef7;
+  --income: #22c55e;
+  --expense: #f43f5e;
+  --needs: #06b6d4;
+  --wants: #f59e0b;
+  --invest: #8b5cf6;
+  --glass-blur: 8px;
+  --glass-opacity: 0.92;
+  --nav-height: 68px;
+  --card-bg: rgba(33,35,46,0.92);
+}
+
+[data-theme="light"] {
+  --bg: #f0f2ff;
+  --surface: #ffffff;
+  --surface2: #e8eaf5;
+  --border: #d0d4e8;
+  --text-primary: #13141a;
+  --text-secondary: #4a5070;
+  --card-bg: rgba(255,255,255,0.92);
+}
+
+[data-theme="dark"] {
+  --bg: #13141a;
+  --surface: #21232e;
+  --surface2: #292c38;
+  --border: #2e3247;
+  --text-primary: #f0f2ff;
+  --text-secondary: #8b92b0;
+  --card-bg: rgba(33,35,46,0.92);
+}
     html, body {
     height: 100%;
     background: var(--bg);
@@ -80,15 +100,15 @@
        Core reusable UI components. Do not edit.
     ============================================================ */
     .card {
-    background: rgba(33, 35, 46, var(--glass-opacity));
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    padding: 16px;
-    position: relative;
-    overflow: hidden;
-    }
+  background: var(--card-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 16px;
+  position: relative;
+  overflow: hidden;
+}
     .card::before {
       content: '';
       position: absolute;
@@ -140,7 +160,52 @@
       justify-content: center;
       flex-shrink: 0;
     }
+    /* Light theme surface overrides */
+[data-theme="light"] .modal,
+[data-theme="light"] .sheet,
+[data-theme="light"] #bottom-nav,
+[data-theme="light"] .page,
+[data-theme="light"] .screen {
+  background: var(--bg);
+  color: var(--text-primary);
+}
 
+[data-theme="light"] #bottom-nav {
+  background: var(--surface);
+  border-top-color: var(--border);
+}
+
+[data-theme="light"] .nav-item span,
+[data-theme="light"] .nav-item svg {
+  color: var(--text-secondary);
+}
+
+[data-theme="light"] .settings-row {
+  background: var(--surface2);
+}
+
+[data-theme="light"] .form-input,
+[data-theme="light"] .form-textarea,
+[data-theme="light"] .dropdown-trigger {
+  background: var(--surface2);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+[data-theme="light"] .numpad-key {
+  background: var(--surface2);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+[data-theme="light"] .page-header {
+  background: var(--bg);
+  border-bottom-color: var(--border);
+}
+
+[data-theme="light"] .tx-row {
+  border-bottom-color: var(--border);
+}
     /* ============================================================
        SECTION CSS-3: SCREEN SYSTEM
        Controls which screen is visible. Do not edit.
@@ -805,6 +870,109 @@
 .sa-tag-active-invest { background: var(--invest) !important; color: #fff !important; border-color: var(--invest) !important; }
 
     /* [PASTE: EDIT TRANSACTION CSS] */
+    /* ===== POLISH + ANIMATIONS ===== */
+
+/* Screen fade transition */
+.screen {
+  animation: screenFadeIn 150ms ease forwards;
+}
+@keyframes screenFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Page slide-in from right */
+.page {
+  transform: translateX(100%);
+  transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+.page.open {
+  transform: translateX(0);
+}
+
+/* Button press scale */
+.btn:active,
+.settings-row:active,
+.nav-item:active,
+.numpad-key:active,
+.tx-row:active {
+  transform: scale(0.96);
+  transition: transform 100ms ease;
+}
+
+/* FAB press */
+#nav-fab:active {
+  transform: scale(0.93);
+}
+
+/* Chip press */
+.chip:active,
+.pill-option:active {
+  transform: scale(0.95);
+}
+
+/* Dropdown open animation */
+.dropdown-list {
+  transform-origin: top center;
+  animation: dropdownOpen 150ms ease forwards;
+}
+@keyframes dropdownOpen {
+  from { opacity: 0; transform: scaleY(0.92) translateY(-4px); }
+  to { opacity: 1; transform: scaleY(1) translateY(0); }
+}
+
+/* Sheet slide up */
+.sheet-overlay.open .sheet {
+  transform: translateY(0);
+  transition: transform 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth color transitions on theme change */
+*, *::before, *::after {
+  transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+/* Override transition for elements that shouldn't animate */
+.numpad-key, canvas, input, textarea {
+  transition: transform 100ms ease !important;
+}
+
+/* Remove tap highlight */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Momentum scroll */
+.screen, .page, .modal, .sheet {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Safe area bottom padding */
+#bottom-nav {
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
+}
+
+/* Empty state animations */
+.empty-state {
+  animation: emptyFadeIn 300ms ease forwards;
+}
+@keyframes emptyFadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Card hover/active on desktop */
+.card {
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+.card:active {
+  transform: scale(0.99);
+}
+
+/* Toast animation */
+#toast {
+  transition: opacity 250ms ease, transform 250ms ease;
+}
 
   </style>
 </head>
@@ -2343,21 +2511,18 @@ function applyAppearance() {
   const accent = s.accentColor || '#4f6ef7';
   const root = document.documentElement;
 
-  // Set theme attribute — CSS handles all color variable switching
+  // Set theme via data attribute — CSS [data-theme] handles all variable switching
   root.setAttribute('data-theme', isDark ? 'dark' : 'light');
 
-  // Override bg if user customized it
+  // Custom background override
   if (s.bgColor) {
+    root.style.setProperty('--bg', s.bgColor);
     if (isDark) {
-      root.style.setProperty('--bg', s.bgColor);
       root.style.setProperty('--surface', adjustColor(s.bgColor, 18));
       root.style.setProperty('--surface2', adjustColor(s.bgColor, 28));
       root.style.setProperty('--border', adjustColor(s.bgColor, 42));
-    } else {
-      root.style.setProperty('--bg', s.bgColor);
     }
   } else {
-    // Clear custom overrides so CSS theme takes over
     root.style.removeProperty('--bg');
     root.style.removeProperty('--surface');
     root.style.removeProperty('--surface2');
@@ -2366,9 +2531,18 @@ function applyAppearance() {
 
   root.style.setProperty('--accent', accent);
 
+  // Glass effect
   const intensity = (s.glassIntensity !== undefined ? s.glassIntensity : 60) / 100;
-  root.style.setProperty('--glass-blur', (intensity * 14) + 'px');
-  root.style.setProperty('--glass-opacity', (1 - intensity * 0.28).toFixed(2));
+  const blur = (intensity * 14).toFixed(1) + 'px';
+  const opacity = (1 - intensity * 0.28).toFixed(2);
+  root.style.setProperty('--glass-blur', blur);
+  root.style.setProperty('--glass-opacity', opacity);
+
+  // Update --card-bg with correct RGB for current theme
+  const r = isDark ? 33 : 255;
+  const g = isDark ? 35 : 255;
+  const b = isDark ? 46 : 255;
+  root.style.setProperty('--card-bg', `rgba(${r},${g},${b},${opacity})`);
 }
 
 function adjustColor(hex, amount) {
@@ -4155,19 +4329,6 @@ function renderBehaviorInsights(txs) {
     </div>`).join('');
 }
 
-// ===== HISTORY TAB =====
-function toggleAnalyticsHistory() {
-  analyticsShowHistory = !analyticsShowHistory;
-  document.getElementById('analytics-main-view').style.display = analyticsShowHistory?'none':'block';
-  document.getElementById('analytics-history-view').style.display = analyticsShowHistory?'block':'none';
-  const btn = document.getElementById('analytics-history-btn');
-  if (btn) {
-    btn.style.background = analyticsShowHistory?'var(--accent)':'var(--surface2)';
-    btn.style.color = analyticsShowHistory?'#fff':'var(--text-secondary)';
-    btn.style.border = analyticsShowHistory?'none':'1px solid var(--border)';
-  }
-  if (analyticsShowHistory) renderHistoryTab();
-}
 
 function renderHistoryTab() {
   const container = document.getElementById('history-snapshots-list');
@@ -5904,23 +6065,19 @@ function setBgColor(color) {
 
 function setGlassIntensity(val) {
   appData.settings.glassIntensity = parseInt(val);
-  saveData();
   const intensity = parseInt(val) / 100;
   const blur = (intensity * 14).toFixed(1) + 'px';
-  const opacity = parseFloat((1 - intensity * 0.28).toFixed(2));
-  document.documentElement.style.setProperty('--glass-blur', blur);
-  document.documentElement.style.setProperty('--glass-opacity', String(opacity));
-  // Force webkit to recalculate on Android
-  document.querySelectorAll('.card').forEach(el => {
-    el.style.backdropFilter = `blur(${blur})`;
-    el.style.webkitBackdropFilter = `blur(${blur})`;
-    // Get current surface RGB based on theme
-    const isDark = appData.settings.theme !== 'light';
-    const r = isDark ? 33 : 255;
-    const g = isDark ? 35 : 255;
-    const b = isDark ? 46 : 255;
-    el.style.background = `rgba(${r},${g},${b},${opacity})`;
-  });
+  const opacity = (1 - intensity * 0.28).toFixed(2);
+  const root = document.documentElement;
+  root.style.setProperty('--glass-blur', blur);
+  root.style.setProperty('--glass-opacity', opacity);
+  // Update card-bg with opacity
+  const isDark = appData.settings.theme !== 'light';
+  const r = isDark ? 33 : 255;
+  const g = isDark ? 35 : 255;
+  const b = isDark ? 46 : 255;
+  root.style.setProperty('--card-bg', `rgba(${r},${g},${b},${opacity})`);
+  saveData();
 }
 
 // ===== EDIT ACCOUNTS =====
@@ -6856,7 +7013,279 @@ function saveTransaction() {
   closeAddTransaction();
   renderHomeScreen();
 }
+// ===== POLISH + EMPTY STATES + EDGE CASES =====
 
+// ===== AMOUNT INPUT GUARD =====
+// Prevent leading zeros and enforce decimal limits
+// Already handled in numpadPress — this is a global safety net
+function sanitizeAmount(val) {
+  if (!val || val === '') return '0';
+  // Remove leading zeros except before decimal
+  val = val.replace(/^0+(\d)/, '$1');
+  // Max 8 digits before decimal
+  const parts = val.split('.');
+  if (parts[0].length > 8) parts[0] = parts[0].slice(0, 8);
+  // Max 2 digits after decimal
+  if (parts.length > 1 && parts[1].length > 2) parts[1] = parts[1].slice(0, 2);
+  return parts.join('.');
+}
+
+// ===== EMPTY STATES =====
+function getEmptyStateHTML(icon, title, subtitle) {
+  return `<div class="empty-state">
+    <div style="color:var(--text-secondary);opacity:0.4;">${getIcon(icon, 48)}</div>
+    <div class="empty-state-title">${title}</div>
+    ${subtitle ? `<div class="empty-state-sub">${subtitle}</div>` : ''}
+  </div>`;
+}
+
+// ===== EDGE CASE: NEGATIVE BALANCE DISPLAY =====
+function getBalanceColor(amount) {
+  return amount >= 0 ? 'var(--income)' : 'var(--expense)';
+}
+
+// ===== EDGE CASE: OVERDUE LABEL =====
+function getOverdueLabel(dueDateStr) {
+  const today = new Date(); today.setHours(0,0,0,0);
+  const due = new Date(dueDateStr); due.setHours(0,0,0,0);
+  const diff = Math.round((due - today) / (1000*60*60*24));
+  if (diff === 0) return { text: 'Due today', color: 'var(--accent)' };
+  if (diff > 0) return { text: `Due in ${diff} day${diff!==1?'s':''}`, color: 'var(--text-secondary)' };
+  return { text: `Overdue ${Math.abs(diff)} day${Math.abs(diff)!==1?'s':''}`, color: 'var(--expense)' };
+}
+
+// ===== EDGE CASE: TRANSFER SAME ACCOUNT =====
+function validateTransfer(fromId, toId) {
+  if (fromId === toId) {
+    showToast('Cannot transfer to the same account');
+    return false;
+  }
+  return true;
+}
+
+// ===== FORMAT DATE READABLE =====
+function formatDateReadable(dateStr) {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
+  const dDate = new Date(dateStr); dDate.setHours(0,0,0,0);
+  if (dDate.getTime() === today.getTime()) return 'Today';
+  if (dDate.getTime() === yesterday.getTime()) return 'Yesterday';
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+// ===== SCROLL TO TOP ON SCREEN SWITCH =====
+const _origSwitchScreen = switchScreen;
+switchScreen = function(name) {
+  _origSwitchScreen(name);
+  const screen = document.getElementById('screen-' + name);
+  if (screen) screen.scrollTop = 0;
+};
+
+// ===== GLOBAL ERROR HANDLER =====
+window.onerror = function(msg, src, line) {
+  console.warn('App error:', msg, 'line:', line);
+  return true; // Prevent default error display
+};
+
+// ===== CURRENCY FORMAT CONSISTENCY =====
+// Ensure all amounts use en-IN locale for BDT formatting
+function formatINR(num) {
+  return Math.abs(num).toLocaleString('en-IN', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  });
+}
+
+// ===== PLANNED OVERDUE BADGE =====
+function renderOverdueBadge(dueDateStr) {
+  const result = getOverdueLabel(dueDateStr);
+  return `<span style="font-size:12px;color:${result.color};font-weight:500;">${result.text}</span>`;
+}
+
+// ===== ACCOUNT DELETION GUARD =====
+function canDeleteAccount(accId) {
+  return !appData.transactions.some(t => t.accId === accId || t.toAccId === accId);
+}
+
+// ===== CATEGORY DELETION GUARD =====
+function canDeleteCategory(catId) {
+  return !appData.transactions.some(t => t.catId === catId);
+}
+
+// ===== BLUR AMOUNT GLOBAL =====
+function getDisplayAmount(amount, type) {
+  if (appData.settings.blurAmounts) return (appData.settings.currency || 'BDT') + ' ••••';
+  const currency = appData.settings.currency || 'BDT';
+  return currency + ' ' + formatINR(amount);
+}
+
+// ===== COMPLETE EMPTY STATES FOR ALL SCREENS =====
+
+// Home — no transactions at all
+function renderHomeEmptyState() {
+  return getEmptyStateHTML(
+    'wallet-icon',
+    'No transactions yet',
+    'Tap + to add your first transaction'
+  );
+}
+
+// Analytics — no data
+function renderAnalyticsEmptyState() {
+  return getEmptyStateHTML(
+    'analytics-chart',
+    'No data for this period',
+    'Add transactions to see analytics'
+  );
+}
+
+// Planned — no entries
+function renderPlannedEmptyState() {
+  return getEmptyStateHTML(
+    'calendar',
+    'No planned transactions',
+    'Tap Add Plan to create one'
+  );
+}
+
+// Loans — no loans
+function renderLoansEmptyState() {
+  return getEmptyStateHTML(
+    'money-bill',
+    'No active loans',
+    'Tap Add Loan to track one'
+  );
+}
+
+// See All — no matches
+function renderSeeAllEmptyState() {
+  return getEmptyStateHTML(
+    'filter',
+    'No transactions match',
+    'Try clearing some filters'
+  );
+}
+
+// ===== PATCH: Use formatDateReadable in transaction rows =====
+// Update recent tx list to show readable date on long press (tooltip)
+// This is a progressive enhancement — existing rows still work
+
+// ===== PATCH: Enforce amount limits in all numpad handlers =====
+const _origNumpadPress = numpadPress;
+numpadPress = function(key) {
+  _origNumpadPress(key);
+  txAmount = sanitizeAmount(txAmount);
+  const display = document.getElementById('numpad-display');
+  if (display) display.textContent = txAmount;
+};
+
+// ===== PATCH: Show "Today" vs actual date in transaction row sub =====
+function getTxSubLabel(tx) {
+  const acc = appData.accounts.find(a => a.id === tx.accId);
+  const accName = acc ? acc.name : '';
+  const dateLabel = formatDateReadable(tx.date);
+  return `${accName}${accName && dateLabel ? ' · ' : ''}${dateLabel}`;
+}
+
+// ===== PATCH: Update renderRecentTx to use getTxSubLabel =====
+const _origRenderRecentTx = renderRecentTx;
+renderRecentTx = function(txs) {
+  const container = document.getElementById('recent-tx-list');
+  if (!container) return;
+  let filtered = [...txs].sort((a,b) => new Date(b.date) - new Date(a.date));
+  if (homeAccountFilter) filtered = filtered.filter(t => t.accId === homeAccountFilter);
+  filtered = filtered.slice(0, 10);
+  if (filtered.length === 0) {
+    container.innerHTML = renderHomeEmptyState();
+    return;
+  }
+  container.innerHTML = filtered.map(tx => {
+    const isIncome = tx.type === 'income';
+    const isTransfer = tx.type === 'transfer';
+    const iconName = tx.subcatIcon || tx.catIcon || 'grid-dots';
+    const catColor = tx.catColor || 'var(--accent)';
+    const tagChip = tx.tag ? `<span class="chip chip-${tx.tag}" style="font-size:11px;padding:3px 8px;">${tx.tag.charAt(0).toUpperCase()+tx.tag.slice(1)}</span>` : '';
+    const amtColor = isIncome ? 'var(--income)' : isTransfer ? 'var(--text-secondary)' : 'var(--expense)';
+    return `<div class="tx-row" onclick="openEditTransaction('${tx.id}')">
+      <div class="icon-bg" style="background:${catColor}22;color:${catColor};">${getIcon(iconName,20)}</div>
+      <div class="tx-info">
+        <div class="tx-name">${tx.subcat || tx.catName || 'Transaction'}</div>
+        <div class="tx-sub">${getTxSubLabel(tx)}</div>
+      </div>
+      <div class="tx-right">
+        <div class="tx-amount" style="color:${amtColor};">${formatAmount(tx.amount)}</div>
+        ${tagChip}
+      </div>
+    </div>`;
+  }).join('');
+};
+
+// ===== PATCH: Update renderSaList to use improved empty state =====
+const _origRenderSaList = renderSaList;
+renderSaList = function() {
+  _origRenderSaList();
+  // After render, check if empty state needs the improved version
+  const container = document.getElementById('sa-tx-list');
+  if (container && container.querySelector('.empty-state')) {
+    container.innerHTML = renderSeeAllEmptyState();
+  }
+};
+
+// ===== PATCH: Add Today/Yesterday labels to See All list =====
+// Already handled by getTxSubLabel which is used in renderRecentTx
+// The See All list uses its own renderer — patch it here
+const _origRenderSaListFull = renderSaList;
+renderSaList = function() {
+  const container = document.getElementById('sa-tx-list');
+  const count = document.getElementById('sa-count');
+  if (!container) return;
+  let txs = [...appData.transactions]
+    .filter(t => !saFilterAccId || t.accId === saFilterAccId)
+    .sort((a,b) => new Date(b.date) - new Date(a.date));
+  const activeFilters = [];
+  if (saFilterDateStart) activeFilters.push('date');
+  if (saFilterCat) activeFilters.push('cat');
+  if (saFilterSubcat) activeFilters.push('subcat');
+  if (saFilterTypes.length > 0) activeFilters.push('type');
+  if (saFilterTags.length > 0) activeFilters.push('tag');
+  if (activeFilters.length > 0) {
+    txs = txs.filter(t => {
+      let pass = true;
+      if (saFilterDateStart) pass = pass && t.date >= saFilterDateStart && t.date <= saFilterDateEnd;
+      if (saFilterCat) pass = pass && t.catName === saFilterCat;
+      if (saFilterSubcat) pass = pass && t.subcat === saFilterSubcat;
+      if (saFilterTypes.length > 0) pass = pass && saFilterTypes.includes(t.type);
+      if (saFilterTags.length > 0) pass = pass && saFilterTags.includes(t.tag);
+      return pass;
+    });
+  }
+  if (count) count.textContent = `Showing ${txs.length} transaction${txs.length !== 1 ? 's' : ''}`;
+  if (txs.length === 0) {
+    container.innerHTML = renderSeeAllEmptyState();
+    return;
+  }
+  container.innerHTML = txs.map(tx => {
+    const isIncome = tx.type === 'income';
+    const isTransfer = tx.type === 'transfer';
+    const iconName = tx.subcatIcon || tx.catIcon || 'grid-dots';
+    const catColor = tx.catColor || 'var(--accent)';
+    const amtColor = isIncome ? 'var(--income)' : isTransfer ? 'var(--text-secondary)' : 'var(--expense)';
+    const tagChip = tx.tag ? `<span class="chip chip-${tx.tag}" style="font-size:11px;padding:3px 8px;">${tx.tag.charAt(0).toUpperCase()+tx.tag.slice(1)}</span>` : '';
+    return `<div class="tx-row" onclick="openEditTransaction('${tx.id}')">
+      <div class="icon-bg" style="background:${catColor}22;color:${catColor};">${getIcon(iconName,20)}</div>
+      <div class="tx-info">
+        <div class="tx-name">${tx.subcat || tx.catName || 'Transaction'}</div>
+        <div class="tx-sub">${getTxSubLabel(tx)}</div>
+      </div>
+      <div class="tx-right">
+        <div class="tx-amount" style="color:${amtColor};">${formatAmount(tx.amount)}</div>
+        ${tagChip}
+      </div>
+    </div>`;
+  }).join('');
+};
 /* ============================================================
    SECTION JS-9: APP INITIALIZATION
    Always last. Do not move above any function definition.
