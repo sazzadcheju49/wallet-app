@@ -1,46 +1,45 @@
 const CACHE_NAME = 'wallet-v3-cache';
-const ASSETS = [
+const ASSETS_TO_CACHE = [
   './wallet.html',
-  './manifest.json'
+  './manifest.json',
+  'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap'
 ];
 
-// Install — cache core files
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+self.addEventListener('install', (e) => {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(ASSETS_TO_CACHE);
+    })
   );
   self.skipWaiting();
 });
 
-// Activate — delete old caches
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      )
-    )
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.map((key) => {
+          if (key !== CACHE_NAME) {
+            return caches.delete(key);
+          }
+        })
+      );
+    })
   );
   self.clients.claim();
 });
 
-// Fetch — cache first, network fallback
-self.addEventListener('fetch', event => {
-  if (event.request.mode === 'navigate') {
-    event.respondWith(
-      caches.match('./wallet.html').then(cached => cached || fetch(event.request))
-    );
-    return;
-  }
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        if (!response || response.status !== 200) return response;
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
-        return response;
+self.addEventListener('fetch', (e) => {
+  e.respondWith(
+    caches.match(e.request).then((cachedResponse) => {
+      return cachedResponse || fetch(e.request).then((response) => {
+        return caches.open(CACHE_NAME).then((cache) => {
+          cache.put(e.request, response.clone());
+          return response;
+        });
       });
+    }).catch(() => {
+      return caches.match('./wallet.html');
     })
   );
 });
